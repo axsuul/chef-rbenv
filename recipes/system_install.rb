@@ -32,6 +32,12 @@ template "/etc/profile.d/rbenv.sh" do
   mode    "0755"
 end
 
+# Modify sudoers so that the user's RBENV_ROOT is properly passed to sudo when doing `sudo rbenv rehash`
+sudoers = Chef::Util::FileEdit.new "/etc/sudoers"
+sudoers.search_file_delete_line /RBENV_ROOT/
+sudoers.insert_line_after_match /env_reset/, "Defaults\tenv_keep+=\"RBENV_ROOT\""
+sudoers.write_file
+
 install_or_upgrade_rbenv  :rbenv_prefix => rbenv_prefix,
                           :git_url => git_url,
                           :git_ref => git_ref,
