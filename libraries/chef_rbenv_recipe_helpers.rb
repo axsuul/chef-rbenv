@@ -77,6 +77,9 @@ class Chef
           init_env = Hash.new
         end
 
+        # Reset in case we have other user installs, don't want them to interfere
+        ENV['RBENV_DIR'] = nil
+
         bash "Initialize rbenv (#{opts[:user] || 'system'})" do
           code  %{PATH="#{prefix}/bin:$PATH" #{prefix}/libexec/rbenv-init -}
           environment({'RBENV_ROOT' => prefix}.merge(init_env))
